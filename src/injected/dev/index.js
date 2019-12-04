@@ -181,7 +181,7 @@ class Injected {
         return this.mergeBlobs(this.blobs).then(blob => {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `${Date.now()}.webm`;
+            link.download = `${document.title || Date.now()}.webm`;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();

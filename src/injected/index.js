@@ -201,7 +201,7 @@ var recordHimeInjected = (function () {
         return this.mergeBlobs(this.blobs).then(function (blob) {
           var link = document.createElement('a');
           link.href = URL.createObjectURL(blob);
-          link.download = "".concat(Date.now(), ".webm");
+          link.download = "".concat(document.title || Date.now(), ".webm");
           link.style.display = 'none';
           document.body.appendChild(link);
           link.click();
