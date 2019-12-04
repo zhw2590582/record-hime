@@ -1,0 +1,37 @@
+{
+    "name": "录播姬",
+    "version": "1.0.0",
+    "description": "一键录制所有直播间视频，不用错过主播的精彩时刻。",
+    "manifest_version": 2,
+    "background": {
+        "scripts": [
+            "background/index.js"
+        ]
+    },
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "browser_action": {},
+    "permissions": [
+        "tabs",
+        "<all_urls>"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content/index.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "web_accessible_resources": [
+        "injected/index.js",
+        "injected/index.css"
+    ],
+    "content_security_policy": "script-src 'self'; object-src 'self'"
+}
