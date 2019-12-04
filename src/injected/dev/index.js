@@ -25,7 +25,7 @@ class Injected {
     }
 
     log(msg) {
-        throw new Error('录播姬 --> ' + msg);
+        throw new Error(`录播姬 --> ${msg}`);
     }
 
     durationToTime(duration) {
@@ -35,10 +35,10 @@ class Injected {
     }
 
     mergeBlobs(blobs = []) {
-        const size = this.size;
+        const { size } = this;
         return new Promise(resolve => {
-            const result = blobs.reduce((result, item) => {
-                const blob = new Blob([result, item], {
+            const result = blobs.reduce((resultBlob, item) => {
+                const blob = new Blob([resultBlob, item], {
                     type: 'video/webm',
                 });
                 this.$wait.textContent = `${Math.floor((blob.size / size || 0) * 100)}%`;
@@ -107,7 +107,7 @@ class Injected {
         let lastPlayerLeft = 0;
         let lastPlayerTop = 0;
 
-        this.$monitor.addEventListener('mousedown', () => {
+        this.$monitor.addEventListener('mousedown', event => {
             isDroging = true;
             lastPageX = event.pageX;
             lastPageY = event.pageY;
@@ -123,7 +123,7 @@ class Injected {
             }
         });
 
-        document.addEventListener('mouseup', () => {
+        document.addEventListener('mouseup', event => {
             if (isDroging) {
                 isDroging = false;
                 this.$container.style.transform = 'translate(0, 0)';
@@ -160,7 +160,7 @@ class Injected {
                         }
                     }, 1000);
                 } else {
-                    this.log('不支持录制格式：' + Injected.options.mimeType);
+                    this.log(`不支持录制格式：${Injected.options.mimeType}`);
                 }
             } else {
                 this.log('未发现视频流');

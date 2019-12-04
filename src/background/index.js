@@ -54,20 +54,5 @@
         }
     });
 
-    chrome.browserAction.onClicked.addListener(function () {
-      chrome.tabs.query({
-        active: true,
-        currentWindow: true
-      }, function (tabs) {
-        var tab = tabs[0];
-
-        if (tab) {
-          chrome.tabs.sendMessage(tab.id, {
-            type: 'init'
-          });
-        }
-      });
-    });
-
 }());
 //# sourceMappingURL=index.js.map

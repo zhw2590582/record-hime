@@ -1,4 +1,4 @@
-var videoRecorderInjected = (function () {
+var recordHimeInjected = (function () {
   'use strict';
 
   function _classCallCheck(instance, Constructor) {
@@ -46,7 +46,7 @@ var videoRecorderInjected = (function () {
     createClass(Injected, [{
       key: "log",
       value: function log(msg) {
-        throw new Error('录播姬 --> ' + msg);
+        throw new Error("\u5F55\u64AD\u59EC --> ".concat(msg));
       }
     }, {
       key: "durationToTime",
@@ -63,8 +63,8 @@ var videoRecorderInjected = (function () {
         var blobs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         var size = this.size;
         return new Promise(function (resolve) {
-          var result = blobs.reduce(function (result, item) {
-            var blob = new Blob([result, item], {
+          var result = blobs.reduce(function (resultBlob, item) {
+            var blob = new Blob([resultBlob, item], {
               type: 'video/webm'
             });
             _this.$wait.textContent = "".concat(Math.floor((blob.size / size || 0) * 100), "%");
@@ -116,7 +116,7 @@ var videoRecorderInjected = (function () {
         var lastPageY = 0;
         var lastPlayerLeft = 0;
         var lastPlayerTop = 0;
-        this.$monitor.addEventListener('mousedown', function () {
+        this.$monitor.addEventListener('mousedown', function (event) {
           isDroging = true;
           lastPageX = event.pageX;
           lastPageY = event.pageY;
@@ -130,7 +130,7 @@ var videoRecorderInjected = (function () {
             _this3.$container.style.transform = "translate(".concat(x, "px, ").concat(y, "px)");
           }
         });
-        document.addEventListener('mouseup', function () {
+        document.addEventListener('mouseup', function (event) {
           if (isDroging) {
             isDroging = false;
             _this3.$container.style.transform = 'translate(0, 0)';
@@ -178,7 +178,7 @@ var videoRecorderInjected = (function () {
                 }
               }, 1000);
             } else {
-              this.log('不支持录制格式：' + Injected.options.mimeType);
+              this.log("\u4E0D\u652F\u6301\u5F55\u5236\u683C\u5F0F\uFF1A".concat(Injected.options.mimeType));
             }
           } else {
             this.log('未发现视频流');

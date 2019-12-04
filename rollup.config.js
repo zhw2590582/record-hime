@@ -12,11 +12,11 @@ const cssnano = require('cssnano');
 const { name, version, homepage } = require('./package.json');
 
 const isProd = process.env.NODE_ENV === 'production';
-module.exports = ['background', 'content', 'injected'].map(item => {
+module.exports = ['background', 'content', 'injected', 'popup'].map(item => {
     return {
         input: `src/${item}/dev/index.js`,
         output: {
-            name: `videoRecorder${item[0].toUpperCase()}${item.slice(1)}`,
+            name: `recordHime${item[0].toUpperCase()}${item.slice(1)}`,
             file: isProd ? `dist/${name}/${item}/index.js` : `src/${item}/index.js`,
             format: 'iife',
             sourcemap: !isProd,
@@ -59,7 +59,7 @@ module.exports = ['background', 'content', 'injected'].map(item => {
                     output: {
                         preamble:
                             '/*!\n' +
-                            ` * video-recorder v${version}\n` +
+                            ` * record-hime v${version}\n` +
                             ` * Github: ${homepage}\n` +
                             ` * (c) 2018-${new Date().getFullYear()} Harvey Zack\n` +
                             ' * Released under the MIT License.\n' +

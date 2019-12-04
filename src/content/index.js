@@ -3,8 +3,7 @@
 
     var isInit = false;
     chrome.runtime.onMessage.addListener(function (request) {
-      var type = request.type,
-          data = request.data;
+      var type = request.type;
 
       switch (type) {
         case 'init':
@@ -13,7 +12,7 @@
             isInit = true;
             var $script = document.createElement('script');
             $script.src = chrome.extension.getURL('injected/index.js');
-            document.documentElement.appendChild($script);
+            document.head.appendChild($script);
             var $style = document.createElement('link');
             $style.rel = 'stylesheet';
             $style.type = 'text/css';
