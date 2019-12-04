@@ -41,6 +41,7 @@ var recordHimeInjected = (function () {
       this.mediaRecorder = null;
       this.createUI();
       this.bindEvent();
+      this.analysis();
     }
 
     createClass(Injected, [{
@@ -79,20 +80,20 @@ var recordHimeInjected = (function () {
         var _this2 = this;
 
         this.$container = document.createElement('div');
-        this.$container.classList.add('video-recorder');
-        this.$container.innerHTML = "\n            <div class=\"vr-states\">\n                <div class=\"vr-state vr-state-before-record vr-active\">\u5F00\u59CB</div>\n                <div class=\"vr-state vr-state-recording\">\u505C\u6B62</div>\n                <div class=\"vr-state vr-state-after-record\">\u4E0B\u8F7D</div>\n                <div class=\"vr-state vr-state-wait\">0%</div>\n            </div>\n            <div class=\"vr-monitors\">\n                <div class=\"vr-monitor vr-monitor-top\">\n                    <div class=\"vr-monitor-name\">\u65F6\u957F\uFF1A</div>\n                    <div class=\"vr-monitor-value vr-duration\">00:00</div>\n                </div>\n                <div class=\"vr-monitor vr-monitor-bottom\">\n                    <div class=\"vr-monitor-name\">\u5927\u5C0F\uFF1A</div>\n                    <div class=\"vr-monitor-value vr-size\">0.00M</div>\n                </div>\n            </div>\n        ";
-        this.$states = Array.from(this.$container.querySelectorAll('.vr-state'));
-        this.$beforeRecord = this.$container.querySelector('.vr-state-before-record');
-        this.$recording = this.$container.querySelector('.vr-state-recording');
-        this.$afterRecord = this.$container.querySelector('.vr-state-after-record');
-        this.$wait = this.$container.querySelector('.vr-state-wait');
-        this.$duration = this.$container.querySelector('.vr-duration');
-        this.$size = this.$container.querySelector('.vr-size');
-        this.$monitor = this.$container.querySelector('.vr-monitor');
-        this.$container.classList.add('vr-focus');
+        this.$container.classList.add('record-hime');
+        this.$container.innerHTML = "\n            <div class=\"rh-states\">\n                <div class=\"rh-state rh-state-before-record rh-active\">\u5F00\u59CB</div>\n                <div class=\"rh-state rh-state-recording\">\u505C\u6B62</div>\n                <div class=\"rh-state rh-state-after-record\">\u4E0B\u8F7D</div>\n                <div class=\"rh-state rh-state-wait\">0%</div>\n            </div>\n            <div class=\"rh-monitors\">\n                <div class=\"rh-monitor rh-monitor-top\">\n                    <div class=\"rh-monitor-name\">\u65F6\u957F\uFF1A</div>\n                    <div class=\"rh-monitor-value rh-duration\">00:00</div>\n                </div>\n                <div class=\"rh-monitor rh-monitor-bottom\">\n                    <div class=\"rh-monitor-name\">\u5927\u5C0F\uFF1A</div>\n                    <div class=\"rh-monitor-value rh-size\">0.00M</div>\n                </div>\n            </div>\n        ";
+        this.$states = Array.from(this.$container.querySelectorAll('.rh-state'));
+        this.$beforeRecord = this.$container.querySelector('.rh-state-before-record');
+        this.$recording = this.$container.querySelector('.rh-state-recording');
+        this.$afterRecord = this.$container.querySelector('.rh-state-after-record');
+        this.$wait = this.$container.querySelector('.rh-state-wait');
+        this.$duration = this.$container.querySelector('.rh-duration');
+        this.$size = this.$container.querySelector('.rh-size');
+        this.$monitor = this.$container.querySelector('.rh-monitor');
+        this.$container.classList.add('rh-focus');
         document.body.appendChild(this.$container);
         setTimeout(function () {
-          _this2.$container.classList.remove('vr-focus');
+          _this2.$container.classList.remove('rh-focus');
         }, 10000);
       }
     }, {
@@ -226,12 +227,22 @@ var recordHimeInjected = (function () {
       key: "changeState",
       value: function changeState(state) {
         this.$states.forEach(function (item) {
-          if (item.classList.contains("vr-state-".concat(state))) {
-            item.classList.add('vr-active');
+          if (item.classList.contains("rh-state-".concat(state))) {
+            item.classList.add('rh-active');
           } else {
-            item.classList.remove('vr-active');
+            item.classList.remove('rh-active');
           }
         });
+      }
+    }, {
+      key: "analysis",
+      value: function analysis() {
+        // eslint-disable-next-line no-underscore-dangle
+        window._hmt = window._hmt || [];
+        var hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?3c93ca28120f48d2a27889d0623cd7b7';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
       }
     }, {
       key: "size",

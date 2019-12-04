@@ -10,6 +10,7 @@ class Injected {
         this.mediaRecorder = null;
         this.createUI();
         this.bindEvent();
+        this.analysis();
     }
 
     static get options() {
@@ -50,39 +51,39 @@ class Injected {
 
     createUI() {
         this.$container = document.createElement('div');
-        this.$container.classList.add('video-recorder');
+        this.$container.classList.add('record-hime');
         this.$container.innerHTML = `
-            <div class="vr-states">
-                <div class="vr-state vr-state-before-record vr-active">开始</div>
-                <div class="vr-state vr-state-recording">停止</div>
-                <div class="vr-state vr-state-after-record">下载</div>
-                <div class="vr-state vr-state-wait">0%</div>
+            <div class="rh-states">
+                <div class="rh-state rh-state-before-record rh-active">开始</div>
+                <div class="rh-state rh-state-recording">停止</div>
+                <div class="rh-state rh-state-after-record">下载</div>
+                <div class="rh-state rh-state-wait">0%</div>
             </div>
-            <div class="vr-monitors">
-                <div class="vr-monitor vr-monitor-top">
-                    <div class="vr-monitor-name">时长：</div>
-                    <div class="vr-monitor-value vr-duration">00:00</div>
+            <div class="rh-monitors">
+                <div class="rh-monitor rh-monitor-top">
+                    <div class="rh-monitor-name">时长：</div>
+                    <div class="rh-monitor-value rh-duration">00:00</div>
                 </div>
-                <div class="vr-monitor vr-monitor-bottom">
-                    <div class="vr-monitor-name">大小：</div>
-                    <div class="vr-monitor-value vr-size">0.00M</div>
+                <div class="rh-monitor rh-monitor-bottom">
+                    <div class="rh-monitor-name">大小：</div>
+                    <div class="rh-monitor-value rh-size">0.00M</div>
                 </div>
             </div>
         `;
 
-        this.$states = Array.from(this.$container.querySelectorAll('.vr-state'));
-        this.$beforeRecord = this.$container.querySelector('.vr-state-before-record');
-        this.$recording = this.$container.querySelector('.vr-state-recording');
-        this.$afterRecord = this.$container.querySelector('.vr-state-after-record');
-        this.$wait = this.$container.querySelector('.vr-state-wait');
-        this.$duration = this.$container.querySelector('.vr-duration');
-        this.$size = this.$container.querySelector('.vr-size');
-        this.$monitor = this.$container.querySelector('.vr-monitor');
-        this.$container.classList.add('vr-focus');
+        this.$states = Array.from(this.$container.querySelectorAll('.rh-state'));
+        this.$beforeRecord = this.$container.querySelector('.rh-state-before-record');
+        this.$recording = this.$container.querySelector('.rh-state-recording');
+        this.$afterRecord = this.$container.querySelector('.rh-state-after-record');
+        this.$wait = this.$container.querySelector('.rh-state-wait');
+        this.$duration = this.$container.querySelector('.rh-duration');
+        this.$size = this.$container.querySelector('.rh-size');
+        this.$monitor = this.$container.querySelector('.rh-monitor');
+        this.$container.classList.add('rh-focus');
         document.body.appendChild(this.$container);
 
         setTimeout(() => {
-            this.$container.classList.remove('vr-focus');
+            this.$container.classList.remove('rh-focus');
         }, 10000);
     }
 
@@ -204,12 +205,21 @@ class Injected {
 
     changeState(state) {
         this.$states.forEach(item => {
-            if (item.classList.contains(`vr-state-${state}`)) {
-                item.classList.add('vr-active');
+            if (item.classList.contains(`rh-state-${state}`)) {
+                item.classList.add('rh-active');
             } else {
-                item.classList.remove('vr-active');
+                item.classList.remove('rh-active');
             }
         });
+    }
+
+    analysis() {
+        // eslint-disable-next-line no-underscore-dangle
+        window._hmt = window._hmt || [];
+        const hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?3c93ca28120f48d2a27889d0623cd7b7';
+        const s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
     }
 }
 
