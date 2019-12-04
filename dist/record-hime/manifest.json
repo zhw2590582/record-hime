@@ -1,6 +1,6 @@
 {
     "name": "录播姬",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "一键录制所有直播间视频，不用错过主播的精彩时刻。",
     "manifest_version": 2,
     "background": {
