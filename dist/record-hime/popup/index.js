@@ -1,5 +1,5 @@
 /*!
- * record-hime v1.0.1
+ * record-hime v1.0.2
  * Github: https://github.com/zhw2590582/record-hime
  * (c) 2018-2019 Harvey Zack
  * Released under the MIT License.

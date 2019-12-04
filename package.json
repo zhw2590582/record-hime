@@ -1,6 +1,6 @@
 {
     "name": "record-hime",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "一键录制所有直播间视频，不用错过主播的精彩时刻。",
     "homepage": "https://github.com/zhw2590582/record-hime",
     "scripts": {
