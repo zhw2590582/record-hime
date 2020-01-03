@@ -63,15 +63,28 @@ var recordHimeInjected = (function () {
 
         var blobs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         var size = this.size;
-        return new Promise(function (resolve) {
-          var result = blobs.reduce(function (resultBlob, item) {
-            var blob = new Blob([resultBlob, item], {
-              type: 'video/webm'
+        var result = new Blob([]);
+        var tasks = blobs.map(function (blob) {
+          return function () {
+            return new Promise(function (resolve) {
+              setTimeout(function () {
+                result = new Blob([result, blob]);
+                _this.$wait.textContent = "".concat(Math.floor((result.size / size || 0) * 100), "%");
+                resolve();
+              }, 0);
             });
-            _this.$wait.textContent = "".concat(Math.floor((blob.size / size || 0) * 100), "%");
-            return blob;
-          }, new Blob([]));
-          resolve(result);
+          };
+        });
+        return new Promise(function (resolve) {
+          (function loop() {
+            var task = tasks.shift();
+
+            if (task) {
+              task().then(loop);
+            } else {
+              resolve(result);
+            }
+          })();
         });
       }
     }, {
@@ -108,9 +121,13 @@ var recordHimeInjected = (function () {
           _this3.stop();
         });
         this.$afterRecord.addEventListener('click', function () {
-          _this3.download().then(function () {
+          if (_this3.blobs.length) {
+            _this3.download().then(function () {
+              _this3.reset();
+            });
+          } else {
             _this3.reset();
-          });
+          }
         });
         var isDroging = false;
         var lastPageX = 0;
@@ -155,31 +172,36 @@ var recordHimeInjected = (function () {
           });
 
           if (this.video) {
-            this.src = this.video.src;
-            this.changeState('recording');
-            this.stream = this.video.captureStream();
+            try {
+              this.src = this.video.src;
+              this.video.crossOrigin = 'anonymous';
+              this.stream = this.video.captureStream();
+              this.changeState('recording');
 
-            if (MediaRecorder && MediaRecorder.isTypeSupported(Injected.options.mimeType)) {
-              this.mediaRecorder = new MediaRecorder(this.stream, Injected.options);
+              if (MediaRecorder && MediaRecorder.isTypeSupported(Injected.options.mimeType)) {
+                this.mediaRecorder = new MediaRecorder(this.stream, Injected.options);
 
-              this.mediaRecorder.ondataavailable = function (event) {
-                _this4.blobs.push(event.data);
+                this.mediaRecorder.ondataavailable = function (event) {
+                  _this4.blobs.push(event.data);
 
-                var size = _this4.size / 1024 / 1024;
-                _this4.$size.textContent = "".concat(size.toFixed(2).slice(-8), "M");
-                _this4.$duration.textContent = _this4.durationToTime(_this4.blobs.filter(function (item) {
-                  return item.size > 1024;
-                }).length);
-              };
+                  var size = _this4.size / 1024 / 1024;
+                  _this4.$size.textContent = "".concat(size.toFixed(2).slice(-8), "M");
+                  _this4.$duration.textContent = _this4.durationToTime(_this4.blobs.filter(function (item) {
+                    return item.size > 1024;
+                  }).length);
+                };
 
-              this.mediaRecorder.start(1000);
-              this.timer = setInterval(function () {
-                if (_this4.src !== _this4.video.src) {
-                  _this4.stop();
-                }
-              }, 1000);
-            } else {
-              this.log("\u4E0D\u652F\u6301\u5F55\u5236\u683C\u5F0F\uFF1A".concat(Injected.options.mimeType));
+                this.mediaRecorder.start(1000);
+                this.timer = setInterval(function () {
+                  if (_this4.src !== _this4.video.src) {
+                    _this4.stop();
+                  }
+                }, 1000);
+              } else {
+                this.log("\u4E0D\u652F\u6301\u5F55\u5236\u683C\u5F0F\uFF1A".concat(Injected.options.mimeType));
+              }
+            } catch (error) {
+              this.log("\u5F55\u5236\u89C6\u9891\u6D41\u5931\u8D25\uFF1A".concat(error.message.trim()));
             }
           } else {
             this.log('未发现视频流');
@@ -191,9 +213,12 @@ var recordHimeInjected = (function () {
     }, {
       key: "stop",
       value: function stop() {
-        this.changeState('after-record');
-        this.mediaRecorder.stop();
         clearInterval(this.timer);
+        this.changeState('after-record');
+
+        if (this.mediaRecorder) {
+          this.mediaRecorder.stop();
+        }
       }
     }, {
       key: "download",
@@ -212,6 +237,7 @@ var recordHimeInjected = (function () {
     }, {
       key: "reset",
       value: function reset() {
+        clearInterval(this.timer);
         this.changeState('before-record');
         this.blobs = [];
         this.src = '';

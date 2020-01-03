@@ -4,7 +4,7 @@
 
 ## 安装
 
--   [在线 chrome 网上应用商店](https://chrome.google.com/webstore/detail/nagmkdppcmenlcgelpgkjoknakghllml)
+-   [在线 chrome 网上应用商店](https://chrome.google.com/webstore/detail/mceccjciahghnipaeabdclgjnfbkignk)
 -   [离线 dist 目录](./dist/)
 
 ## 使用

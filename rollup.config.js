@@ -42,7 +42,8 @@ module.exports = ['background', 'content', 'injected', 'popup'].map(item => {
                 plugins: ['@babel/plugin-external-helpers', '@babel/plugin-transform-runtime'],
             }),
             replace({
-                'process.env.NODE_ENV': JSON.stringify('production'),
+                exclude: 'node_modules/**',
+                __ENV__: JSON.stringify(process.env.NODE_ENV || 'development'),
             }),
             postcss({
                 plugins: [

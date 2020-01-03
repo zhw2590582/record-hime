@@ -37,15 +37,27 @@ class Injected {
 
     mergeBlobs(blobs = []) {
         const { size } = this;
+        let result = new Blob([]);
+
+        const tasks = blobs.map(blob => () => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    result = new Blob([result, blob]);
+                    this.$wait.textContent = `${Math.floor((result.size / size || 0) * 100)}%`;
+                    resolve();
+                }, 0);
+            });
+        });
+
         return new Promise(resolve => {
-            const result = blobs.reduce((resultBlob, item) => {
-                const blob = new Blob([resultBlob, item], {
-                    type: 'video/webm',
-                });
-                this.$wait.textContent = `${Math.floor((blob.size / size || 0) * 100)}%`;
-                return blob;
-            }, new Blob([]));
-            resolve(result);
+            (function loop() {
+                const task = tasks.shift();
+                if (task) {
+                    task().then(loop);
+                } else {
+                    resolve(result);
+                }
+            })();
         });
     }
 
@@ -97,9 +109,13 @@ class Injected {
         });
 
         this.$afterRecord.addEventListener('click', () => {
-            this.download().then(() => {
+            if (this.blobs.length) {
+                this.download().then(() => {
+                    this.reset();
+                });
+            } else {
                 this.reset();
-            });
+            }
         });
 
         let isDroging = false;
@@ -141,27 +157,32 @@ class Injected {
         if (videos.length) {
             this.video = videos.find(item => item.captureStream);
             if (this.video) {
-                this.src = this.video.src;
-                this.changeState('recording');
-                this.stream = this.video.captureStream();
-                if (MediaRecorder && MediaRecorder.isTypeSupported(Injected.options.mimeType)) {
-                    this.mediaRecorder = new MediaRecorder(this.stream, Injected.options);
-                    this.mediaRecorder.ondataavailable = event => {
-                        this.blobs.push(event.data);
-                        const size = this.size / 1024 / 1024;
-                        this.$size.textContent = `${size.toFixed(2).slice(-8)}M`;
-                        this.$duration.textContent = this.durationToTime(
-                            this.blobs.filter(item => item.size > 1024).length,
-                        );
-                    };
-                    this.mediaRecorder.start(1000);
-                    this.timer = setInterval(() => {
-                        if (this.src !== this.video.src) {
-                            this.stop();
-                        }
-                    }, 1000);
-                } else {
-                    this.log(`不支持录制格式：${Injected.options.mimeType}`);
+                try {
+                    this.src = this.video.src;
+                    this.video.crossOrigin = 'anonymous';
+                    this.stream = this.video.captureStream();
+                    this.changeState('recording');
+                    if (MediaRecorder && MediaRecorder.isTypeSupported(Injected.options.mimeType)) {
+                        this.mediaRecorder = new MediaRecorder(this.stream, Injected.options);
+                        this.mediaRecorder.ondataavailable = event => {
+                            this.blobs.push(event.data);
+                            const size = this.size / 1024 / 1024;
+                            this.$size.textContent = `${size.toFixed(2).slice(-8)}M`;
+                            this.$duration.textContent = this.durationToTime(
+                                this.blobs.filter(item => item.size > 1024).length,
+                            );
+                        };
+                        this.mediaRecorder.start(1000);
+                        this.timer = setInterval(() => {
+                            if (this.src !== this.video.src) {
+                                this.stop();
+                            }
+                        }, 1000);
+                    } else {
+                        this.log(`不支持录制格式：${Injected.options.mimeType}`);
+                    }
+                } catch (error) {
+                    this.log(`录制视频流失败：${error.message.trim()}`);
                 }
             } else {
                 this.log('未发现视频流');
@@ -172,9 +193,11 @@ class Injected {
     }
 
     stop() {
-        this.changeState('after-record');
-        this.mediaRecorder.stop();
         clearInterval(this.timer);
+        this.changeState('after-record');
+        if (this.mediaRecorder) {
+            this.mediaRecorder.stop();
+        }
     }
 
     download() {
@@ -191,6 +214,7 @@ class Injected {
     }
 
     reset() {
+        clearInterval(this.timer);
         this.changeState('before-record');
         this.blobs = [];
         this.src = '';
