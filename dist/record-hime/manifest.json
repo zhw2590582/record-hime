@@ -20,19 +20,6 @@
         "tabs",
         "activeTab"
     ],
-    "content_scripts": [
-        {
-            "matches": [
-                "http://*/*",
-                "https://*/*"
-            ],
-            "js": [
-                "content/index.js"
-            ],
-            "all_frames": true,
-            "run_at": "document_start"
-        }
-    ],
     "web_accessible_resources": [
         "injected/index.js",
         "injected/index.css"

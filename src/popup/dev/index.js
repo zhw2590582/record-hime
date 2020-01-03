@@ -23,8 +23,8 @@ chrome.tabs.query(
     tabs => {
         const tab = tabs[0];
         if (tab) {
-            chrome.tabs.sendMessage(tab.id, {
-                type: 'init',
+            chrome.tabs.executeScript(tab.id, {
+                file: 'content/index.js',
             });
         }
     },
