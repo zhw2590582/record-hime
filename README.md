@@ -1,4 +1,4 @@
-# :watermelon: Chrome 扩展 - 录播姬
+# :balloon: Chrome 扩展 - 录播姬
 
 > 一键录制所有直播间视频，不用错过主播的精彩时刻。
 
